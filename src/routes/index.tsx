@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Mohon pinjaman peribadi dalam talian dengan RinggitFlex. Keputusan jelas, kos telus, bayaran ansuran mudah." },
       { property: "og:title", content: "RinggitFlex — Pinjaman Peribadi Dalam Talian" },
       { property: "og:description", content: "Keputusan jelas, kos telus, bayaran ansuran mudah." },
-    ],
+     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }, ],
   }),
   component: Laman,
 });

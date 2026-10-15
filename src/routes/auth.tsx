@@ -17,7 +17,7 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Log masuk atau daftar akaun RinggitFlex untuk memohon pinjaman." },
       { property: "og:title", content: "Log Masuk / Daftar — RinggitFlex" },
       { property: "og:description", content: "Akses akaun pinjaman RinggitFlex anda." },
-    ],
+     { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }, ],
   }),
   component: Auth,
 });

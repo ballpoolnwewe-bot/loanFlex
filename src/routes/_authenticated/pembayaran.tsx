@@ -13,7 +13,7 @@ import { waLink } from "@/lib/whatsapp";
 import { mulaBayaran, sahkanSimulasi, statusGateway } from "@/lib/bayaran.functions";
 
 export const Route = createFileRoute("/_authenticated/pembayaran")({
-  head: () => ({ meta: [{ title: "Pembayaran — RinggitFlex" }, { name: "description", content: "Bayar ansuran dan lihat sejarah transaksi." }] }),
+  head: () => ({ meta: [{ title: "Pembayaran — RinggitFlex" }, { name: "description", content: "Bayar ansuran dan lihat sejarah transaksi." }, { property: "og:title", content: "Pembayaran — RinggitFlex" }, { property: "og:description", content: "Bayar ansuran dan lihat sejarah transaksi." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: Pembayaran,
 });
 

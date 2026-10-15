@@ -16,7 +16,7 @@ import { useProduk, useSaya, type Permohonan, type Pinjaman } from "@/lib/data";
 import { STATUS_PERMOHONAN, STATUS_PINJAMAN, STATUS_TRANSAKSI, masa, ralatMesej, rm } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => ({ meta: [{ title: "Panel Admin — RinggitFlex" }, { name: "description", content: "Panel pentadbir RinggitFlex." }] }),
+  head: () => ({ meta: [{ title: "Panel Admin — RinggitFlex" }, { name: "description", content: "Panel pentadbir RinggitFlex." }, { property: "og:title", content: "Panel Admin — RinggitFlex" }, { property: "og:description", content: "Panel pentadbir RinggitFlex." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: Admin,
 });
 
@@ -125,7 +125,7 @@ function TabPermohonan({ senarai }: { senarai: Permohonan[] }) {
         {hasil.length === 0 && <p className="p-6 text-center text-sm text-muted-foreground">Tiada permohonan sepadan.</p>}
         {hasil.map((p) => (
           <button key={p.id} onClick={() => setPilih(p)} className="flex w-full flex-wrap items-center justify-between gap-2 rounded-xl px-2 py-3 text-left text-sm transition hover:bg-secondary/60">
-            <div><p className="font-semibold">{p.nama_penuh}</p><p className="text-xs text-muted-foreground">{p.emel} · {(p.jumlah_dipohon == null ? "Had ditentukan selepas semakan" : rm(p.jumlah_dipohon))} · {masa(p.created_at)}</p></div>
+            <div><p className="font-semibold">{p.nama_penuh}</p><p className="text-xs text-muted-foreground">{p.emel} · {masa(p.created_at)}</p></div>
             <Lencana peta={STATUS_PERMOHONAN} status={p.status} />
           </button>
         ))}
@@ -138,7 +138,7 @@ function TabPermohonan({ senarai }: { senarai: Permohonan[] }) {
 function DetailPermohonan({ p, tutup }: { p: Permohonan; tutup: () => void }) {
   const qc = useQueryClient();
   const produk = useProduk();
-  const [had, setHad] = useState(p.jumlah_dipohon == null ? "" : String(p.jumlah_dipohon));
+  const [had, setHad] = useState("");
   const [sebab, setSebab] = useState("");
   const [catatan, setCatatan] = useState("");
   const [sibuk, setSibuk] = useState(false);
@@ -169,7 +169,7 @@ function DetailPermohonan({ p, tutup }: { p: Permohonan; tutup: () => void }) {
       <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto rounded-2xl">
         <DialogHeader><DialogTitle className="flex items-center gap-3">{p.nama_penuh} <Lencana peta={STATUS_PERMOHONAN} status={p.status} /></DialogTitle></DialogHeader>
         <div className="grid gap-x-6 sm:grid-cols-2">
-          {[["No. KP", p.no_kad_pengenalan], ["Telefon", p.no_telefon], ["Emel", p.emel], ["Pekerjaan", p.pekerjaan], ["Majikan", p.majikan || "-"], ["Pengalaman", `${p.pengalaman_tahun} tahun`], ["Gaji bulanan", rm(p.gaji_bulanan)], ["Jumlah dipohon", (p.jumlah_dipohon == null ? "Had ditentukan selepas semakan" : rm(p.jumlah_dipohon))], ["Tujuan", p.tujuan], ["Dihantar", masa(p.created_at)]].map(([l, v]) => <Baris key={l} label={l} nilai={v} />)}
+          {[["No. KP", p.no_kad_pengenalan], ["Telefon", p.no_telefon], ["Emel", p.emel], ["Pekerjaan", p.pekerjaan], ["Majikan", p.majikan || "-"], ["Pengalaman", `${p.pengalaman_tahun} tahun`], ["Gaji bulanan", rm(p.gaji_bulanan)], ["Tujuan", p.tujuan], ["Dihantar", masa(p.created_at)]].map(([l, v]) => <Baris key={l} label={l} nilai={v} />)}
         </div>
         <Baris label="Alamat" nilai={p.alamat} />
         {Array.isArray(p.kontak_darurat) && p.kontak_darurat.length > 0 && (

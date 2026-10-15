@@ -11,3 +11,6 @@
 
 - Keep application validation in the shared permohonan schema so the form and rule tests agree.
 - Version submission RPC changes in database-update SQL alongside client types so existing installations can upgrade safely.
+
+- Keep date and timestamp display formatting centralized in src/lib/format.ts so all application screens use the same timezone.
+- Retain legacy requested-amount database fields for compatibility, but do not use them to prefill administrator credit decisions.

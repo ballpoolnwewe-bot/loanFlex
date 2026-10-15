@@ -6,7 +6,7 @@ import { ringkasPinjaman, useKelayakan, useNotifikasi, usePermohonanSaya, usePin
 import { STATUS_PERMOHONAN, STATUS_PINJAMAN, masa, rm, tarikh } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Papan Pemuka — RinggitFlex" }, { name: "description", content: "Ringkasan akaun pinjaman anda." }] }),
+  head: () => ({ meta: [{ title: "Papan Pemuka — RinggitFlex" }, { name: "description", content: "Ringkasan akaun pinjaman anda." }, { property: "og:title", content: "Papan Pemuka — RinggitFlex" }, { property: "og:description", content: "Ringkasan akaun pinjaman anda." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: Dashboard,
 });
 
@@ -91,8 +91,7 @@ function Dashboard() {
                   );
                 })}
               </div>
-              <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
-                <div><p className="text-muted-foreground">Jumlah dipohon</p><p className="font-semibold">{(terkini.jumlah_dipohon == null ? "Had ditentukan selepas semakan" : rm(terkini.jumlah_dipohon))}</p></div>
+              <div className="mt-6 grid gap-4 text-sm">
                 <div><p className="text-muted-foreground">Tarikh hantar</p><p className="font-semibold">{tarikh(terkini.created_at)}</p></div>
               </div>
               {(terkini.status === "lulus" || terkini.status === "ditolak") && (

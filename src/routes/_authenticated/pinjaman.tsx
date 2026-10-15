@@ -15,7 +15,7 @@ import { BANK, STATUS_PINJAMAN, masa, ralatMesej, rm, tarikh } from "@/lib/forma
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/pinjaman")({
-  head: () => ({ meta: [{ title: "Pinjaman Saya — RinggitFlex" }, { name: "description", content: "Had kredit, pencairan dan jadual ansuran." }] }),
+  head: () => ({ meta: [{ title: "Pinjaman Saya — RinggitFlex" }, { name: "description", content: "Had kredit, pencairan dan jadual ansuran." }, { property: "og:title", content: "Pinjaman Saya — RinggitFlex" }, { property: "og:description", content: "Had kredit, pencairan dan jadual ansuran." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: Pinjaman,
 });
 

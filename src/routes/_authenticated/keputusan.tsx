@@ -10,7 +10,7 @@ import { useKelayakan, usePermohonanSaya, useProduk } from "@/lib/data";
 import { rm, tarikh, masa } from "@/lib/format";
 
 export const Route = createFileRoute("/_authenticated/keputusan")({
-  head: () => ({ meta: [{ title: "Keputusan Permohonan — RinggitFlex" }, { name: "description", content: "Keputusan permohonan pinjaman anda." }] }),
+  head: () => ({ meta: [{ title: "Keputusan Permohonan — RinggitFlex" }, { name: "description", content: "Keputusan permohonan pinjaman anda." }, { property: "og:title", content: "Keputusan Permohonan — RinggitFlex" }, { property: "og:description", content: "Keputusan permohonan pinjaman anda." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: Keputusan,
 });
 
@@ -63,7 +63,6 @@ function Keputusan() {
           <h2 className="font-bold">Butiran keputusan</h2>
           <div className="mt-2 divide-y divide-border">
             <Baris label="Tarikh kelulusan" nilai={masa(p.tarikh_keputusan)} />
-            <Baris label="Jumlah dipohon" nilai={(p.jumlah_dipohon == null ? "Had ditentukan selepas semakan" : rm(p.jumlah_dipohon))} />
             <Baris label="Had diluluskan" nilai={rm(p.had_kredit)} />
             {produk.data && <Baris label="Kadar faedah" nilai={`${Number(produk.data.kadar_faedah_bulanan)}% seminggu (flat)`} />}
             {produk.data && <Baris label="Pilihan tenor" nilai={`${produk.data.pilihan_tenor.join(", ")} hari`} />}

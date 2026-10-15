@@ -1,0 +1,3 @@
+- [x] Remove requested-amount information from application screens and admin approval.
+- [x] Replace Malaysia time with the client device timezone.
+- [x] Verify timezone rules and package revised source ZIP.
