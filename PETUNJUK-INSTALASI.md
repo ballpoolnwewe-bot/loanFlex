@@ -23,10 +23,15 @@ VITE_SUPABASE_URL=<sama>
 Nilai ini didapat dari Supabase Dashboard → Project Settings → API.
 
 ## 4. Database
-Jalankan migrasi yang tersedia:
-- Folder `supabase/` berisi migrasi SQL (tabel, RLS, seed).
-- Folder `drizzle/` berisi schema & migrasi Drizzle.
+Jalankan migrasi yang tersedia, urut dari yang paling lama:
+- `drizzle/migrations/` — schema & migrasi Drizzle (tabel, RLS, seed).
+- `database-update/` — pembaruan lanjutan, termasuk `faedah-mingguan-dan-bayaran-whatsapp.sql`
+  untuk bunga 25% per minggu dan pencatatan pembayaran lewat WhatsApp.
+
 Terapkan lewat Supabase SQL Editor atau `supabase db push` sesuai setup Anda.
+
+## Pembaruan formulir permohonan
+Setelah migrasi sebelumnya, jalankan `database-update/kontak-darurat-dan-slip-gaji.sql` sebelum memakai versi aplikasi ini. Pembaruan ini menyimpan 5 kontak darurat dan foto slip gaji dalam dokumen pribadi. Jumlah permohonan baru tidak lagi dimasukkan; had kredit ditentukan pentadbir. Permohonan lama tetap dipertahankan.
 
 ## 5. Payment Gateway
 Isi API key payment gateway sebagai secret di environment server

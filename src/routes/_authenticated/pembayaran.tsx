@@ -66,12 +66,6 @@ function Pembayaran() {
   return (
     <div className="space-y-6 animate-rise">
       <h1 className="text-3xl font-bold">Pembayaran</h1>
-      {gw.data?.simulasi && (
-        <div className="flex gap-3 rounded-2xl border border-warning/40 bg-warning/15 p-4 text-sm text-warning-foreground">
-          <FlaskConical className="size-5 shrink-0" />
-          <p><b>Mod simulasi (development).</b> Gerbang pembayaran belum dikonfigurasi. Transaksi di sini bukan pembayaran sebenar dan ditanda "simulasi" dalam sistem.</p>
-        </div>
-      )}
       {!semasa || semasa.status !== "aktif" ? (
         <Kosong tajuk="Tiada tagihan aktif" mesej="Tagihan akan muncul selepas dana pinjaman anda dicairkan." aksi={<Button asChild variant="outline"><Link to="/pinjaman">Lihat pinjaman</Link></Button>} />
       ) : (

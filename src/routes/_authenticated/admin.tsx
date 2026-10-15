@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Search, Users, FileText, Banknote, Receipt, Settings, ScrollText, Loader2, ShieldAlert, Clock, CheckCircle2, Send } from "lucide-react";
+import { Search, Users, FileText, Banknote, Receipt, Settings, ScrollText, Loader2, ShieldAlert, Clock, CheckCircle2, Send, Wallet } from "lucide-react";
 import { janaIdTransaksi } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -66,6 +66,7 @@ function Admin() {
         <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 rounded-2xl bg-secondary p-1">
           <TabsTrigger value="perm" className="rounded-xl"><FileText className="size-4" /> Permohonan</TabsTrigger>
           <TabsTrigger value="pin" className="rounded-xl"><Banknote className="size-4" /> Pencairan</TabsTrigger>
+          <TabsTrigger value="bayar" className="rounded-xl"><Wallet className="size-4" /> Pembayaran</TabsTrigger>
           <TabsTrigger value="tr" className="rounded-xl"><Receipt className="size-4" /> Transaksi</TabsTrigger>
           <TabsTrigger value="produk" className="rounded-xl"><Settings className="size-4" /> Produk</TabsTrigger>
           <TabsTrigger value="user" className="rounded-xl"><Users className="size-4" /> Pengguna</TabsTrigger>
@@ -73,12 +74,13 @@ function Admin() {
         </TabsList>
         <TabsContent value="perm"><TabPermohonan senarai={x.perm} /></TabsContent>
         <TabsContent value="pin"><TabPencairan senarai={x.pin} nama={nama} /></TabsContent>
+        <TabsContent value="bayar"><TabBayaran senarai={x.pin} nama={nama} /></TabsContent>
         <TabsContent value="tr">
           <div className="surface divide-y divide-border p-4">
             {x.tr.length === 0 && <p className="p-4 text-sm text-muted-foreground">Tiada transaksi.</p>}
             {x.tr.map((t) => (
               <div key={t.id} className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm">
-                <div><p className="font-semibold">{rm(t.jumlah)} · {nama(t.user_id)} {t.mode === "simulasi" && <span className="rounded bg-warning/20 px-1.5 text-[10px] font-bold uppercase">simulasi</span>}</p><p className="text-xs text-muted-foreground">{masa(t.created_at)} · {t.penyedia} · {t.rujukan_gateway ?? "-"}</p></div>
+                <div><p className="font-semibold">{rm(t.jumlah)} · {nama(t.user_id)} {t.mode === "whatsapp" && <span className="rounded bg-success/15 px-1.5 text-[10px] font-bold uppercase text-success">whatsapp</span>}</p><p className="text-xs text-muted-foreground">{masa(t.created_at)} · {t.penyedia} · {t.rujukan_gateway ?? "-"}</p></div>
                 <Lencana peta={STATUS_TRANSAKSI} status={t.status} />
               </div>
             ))}
@@ -123,7 +125,7 @@ function TabPermohonan({ senarai }: { senarai: Permohonan[] }) {
         {hasil.length === 0 && <p className="p-6 text-center text-sm text-muted-foreground">Tiada permohonan sepadan.</p>}
         {hasil.map((p) => (
           <button key={p.id} onClick={() => setPilih(p)} className="flex w-full flex-wrap items-center justify-between gap-2 rounded-xl px-2 py-3 text-left text-sm transition hover:bg-secondary/60">
-            <div><p className="font-semibold">{p.nama_penuh}</p><p className="text-xs text-muted-foreground">{p.emel} · {rm(p.jumlah_dipohon)} · {masa(p.created_at)}</p></div>
+            <div><p className="font-semibold">{p.nama_penuh}</p><p className="text-xs text-muted-foreground">{p.emel} · {(p.jumlah_dipohon == null ? "Had ditentukan selepas semakan" : rm(p.jumlah_dipohon))} · {masa(p.created_at)}</p></div>
             <Lencana peta={STATUS_PERMOHONAN} status={p.status} />
           </button>
         ))}
@@ -136,16 +138,17 @@ function TabPermohonan({ senarai }: { senarai: Permohonan[] }) {
 function DetailPermohonan({ p, tutup }: { p: Permohonan; tutup: () => void }) {
   const qc = useQueryClient();
   const produk = useProduk();
-  const [had, setHad] = useState(String(p.jumlah_dipohon));
+  const [had, setHad] = useState(p.jumlah_dipohon == null ? "" : String(p.jumlah_dipohon));
   const [sebab, setSebab] = useState("");
   const [catatan, setCatatan] = useState("");
   const [sibuk, setSibuk] = useState(false);
-  const [gambar, setGambar] = useState<{ kp?: string; selfie?: string }>({});
+  const [gambar, setGambar] = useState<{ kp?: string; selfie?: string; slip?: string }>({});
   useEffect(() => {
     Promise.all([
       supabase.storage.from("dokumen-permohonan").createSignedUrl(p.foto_kp_path, 300),
       supabase.storage.from("dokumen-permohonan").createSignedUrl(p.foto_selfie_path, 300),
-    ]).then(([a, b]) => setGambar({ kp: a.data?.signedUrl, selfie: b.data?.signedUrl }));
+      p.foto_slip_gaji_path ? supabase.storage.from("dokumen-permohonan").createSignedUrl(p.foto_slip_gaji_path, 300) : Promise.resolve(null),
+    ]).then(([a, b, c]) => setGambar({ kp: a.data?.signedUrl, selfie: b.data?.signedUrl, slip: c?.data?.signedUrl }));
   }, [p]);
   const boleh = p.status === "menunggu" || p.status === "disemak";
 
@@ -166,13 +169,21 @@ function DetailPermohonan({ p, tutup }: { p: Permohonan; tutup: () => void }) {
       <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto rounded-2xl">
         <DialogHeader><DialogTitle className="flex items-center gap-3">{p.nama_penuh} <Lencana peta={STATUS_PERMOHONAN} status={p.status} /></DialogTitle></DialogHeader>
         <div className="grid gap-x-6 sm:grid-cols-2">
-          {[["No. KP", p.no_kad_pengenalan], ["Telefon", p.no_telefon], ["Emel", p.emel], ["Pekerjaan", p.pekerjaan], ["Majikan", p.majikan || "-"], ["Pengalaman", `${p.pengalaman_tahun} tahun`], ["Gaji bulanan", rm(p.gaji_bulanan)], ["Jumlah dipohon", rm(p.jumlah_dipohon)], ["Tujuan", p.tujuan], ["Dihantar", masa(p.created_at)]].map(([l, v]) => <Baris key={l} label={l} nilai={v} />)}
+          {[["No. KP", p.no_kad_pengenalan], ["Telefon", p.no_telefon], ["Emel", p.emel], ["Pekerjaan", p.pekerjaan], ["Majikan", p.majikan || "-"], ["Pengalaman", `${p.pengalaman_tahun} tahun`], ["Gaji bulanan", rm(p.gaji_bulanan)], ["Jumlah dipohon", (p.jumlah_dipohon == null ? "Had ditentukan selepas semakan" : rm(p.jumlah_dipohon))], ["Tujuan", p.tujuan], ["Dihantar", masa(p.created_at)]].map(([l, v]) => <Baris key={l} label={l} nilai={v} />)}
         </div>
         <Baris label="Alamat" nilai={p.alamat} />
+        {Array.isArray(p.kontak_darurat) && p.kontak_darurat.length > 0 && (
+          <section className="space-y-2">
+            <h3 className="font-bold">Kontak darurat</h3>
+            {p.kontak_darurat.map((c, i) => c && typeof c === "object" && !Array.isArray(c) ? (
+              <Baris key={i} label={`Kontak ${i + 1}`} nilai={`${String(c.nama ?? "")} · ${String(c.telefon ?? "")} · ${String(c.hubungan ?? "")}`} />
+            ) : null)}
+          </section>
+        )}
         <div className="grid grid-cols-2 gap-3">
-          {(["kp", "selfie"] as const).map((k) => (
+          {(["kp", "selfie", ...(p.foto_slip_gaji_path ? ["slip" as const] : [])] as const).map((k) => (
             <a key={k} href={gambar[k]} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-xl border border-border bg-secondary">
-              {gambar[k] ? <img src={gambar[k]} alt={k === "kp" ? "Kad pengenalan" : "Swafoto"} className="aspect-[4/3] w-full object-cover" /> : <div className="flex aspect-[4/3] items-center justify-center"><Loader2 className="animate-spin" /></div>}
+              {gambar[k] ? <img src={gambar[k]} alt={k === "kp" ? "Kad pengenalan" : k === "slip" ? "Slip gaji" : "Swafoto"} className="aspect-[4/3] w-full object-cover" /> : <div className="flex aspect-[4/3] items-center justify-center"><Loader2 className="animate-spin" /></div>}
             </a>
           ))}
         </div>
@@ -249,7 +260,7 @@ function TabProduk() {
   return (
     <div className="surface space-y-4 p-6">
       <div className="grid gap-4 sm:grid-cols-3">
-        {M("kadar", "Faedah (% sebulan, flat)")}{M("yuran", "Yuran pemprosesan (%)")}{M("denda", "Caj lewat (RM)")}
+        {M("kadar", "Faedah (% seminggu, flat)")}{M("yuran", "Yuran pemprosesan (%)")}{M("denda", "Caj lewat (RM)")}
         {M("tenor", "Pilihan tenor (hari, koma)")}{M("min", "Jumlah minimum (RM)")}{M("max", "Jumlah maksimum (RM)")}
       </div>
       <div className="space-y-1.5"><Label>Syarat pinjaman</Label><Textarea rows={5} value={f.syarat} onChange={(e) => setF({ ...f, syarat: e.target.value })} className="rounded-xl" /></div>
@@ -301,6 +312,60 @@ function TabPengguna({ prof, roles, sayaId }: { prof: { id: string; nama_penuh: 
               <Input placeholder="Tajuk" value={notis.tajuk} maxLength={120} onChange={(e) => setNotis({ ...notis, tajuk: e.target.value })} />
               <Textarea placeholder="Mesej" value={notis.mesej} maxLength={1000} onChange={(e) => setNotis({ ...notis, mesej: e.target.value })} />
               <Button variant="hero" className="w-full" onClick={hantar}>Hantar</Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+function TabBayaran({ senarai, nama }: { senarai: Pinjaman[]; nama: (id: string) => string }) {
+  const qc = useQueryClient();
+  const aktif = senarai.filter((p) => p.status === "aktif");
+  const [pilih, setPilih] = useState<Pinjaman | null>(null);
+  const [jumlah, setJumlah] = useState("");
+  const [rujukan, setRujukan] = useState("");
+  const [catatan, setCatatan] = useState("");
+  const [sibuk, setSibuk] = useState(false);
+  const baki = (p: Pinjaman) => Math.max(0, Number(p.jumlah_kewajipan) - Number(p.jumlah_dibayar));
+  const buka = (p: Pinjaman) => { setPilih(p); setJumlah(baki(p).toFixed(2)); setRujukan(""); setCatatan(""); };
+  const simpan = async () => {
+    if (!pilih) return;
+    const n = Number(jumlah);
+    if (!(n > 0)) return toast.error("Masukkan jumlah bayaran.");
+    if (!confirm(`Rekod bayaran ${rm(n)} untuk ${nama(pilih.user_id)}?`)) return;
+    setSibuk(true);
+    const { error } = await supabase.rpc("admin_rekod_bayaran", { _pinjaman_id: pilih.id, _jumlah: n, _rujukan: rujukan, _catatan: catatan });
+    setSibuk(false);
+    if (error) return toast.error(ralatMesej(error));
+    toast.success("Bayaran direkodkan.");
+    setPilih(null);
+    qc.invalidateQueries();
+  };
+  if (!aktif.length) return <Kosong tajuk="Tiada pinjaman aktif" mesej="Pinjaman yang sedang berjalan akan muncul di sini untuk direkodkan bayarannya." />;
+  return (
+    <div className="space-y-3">
+      <p className="text-sm text-muted-foreground">Rekod bayaran yang diterima daripada pelanggan melalui WhatsApp.</p>
+      {aktif.map((p) => (
+        <div key={p.id} className="surface flex flex-wrap items-center justify-between gap-3 p-4 text-sm">
+          <div>
+            <p className="font-semibold">{nama(p.user_id)}</p>
+            <p className="text-xs text-muted-foreground">Kewajipan {rm(p.jumlah_kewajipan)} · Dibayar {rm(p.jumlah_dibayar)} · <b className="text-foreground">Baki {rm(baki(p))}</b></p>
+          </div>
+          <Button variant="success" onClick={() => buka(p)}><Wallet /> Rekod bayaran</Button>
+        </div>
+      ))}
+      <Dialog open={!!pilih} onOpenChange={(o) => !o && setPilih(null)}>
+        <DialogContent className="rounded-2xl">
+          <DialogHeader><DialogTitle>Rekod bayaran WhatsApp</DialogTitle></DialogHeader>
+          {pilih && (
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">{nama(pilih.user_id)} · Baki {rm(baki(pilih))}</p>
+              <div className="space-y-1.5"><Label>Jumlah diterima (RM)</Label><Input type="number" inputMode="decimal" value={jumlah} onChange={(e) => setJumlah(e.target.value)} className="rounded-xl" /></div>
+              <div className="space-y-1.5"><Label>No. rujukan / resit (pilihan)</Label><Input value={rujukan} maxLength={80} onChange={(e) => setRujukan(e.target.value)} className="rounded-xl" /></div>
+              <div className="space-y-1.5"><Label>Catatan (pilihan)</Label><Textarea value={catatan} maxLength={500} onChange={(e) => setCatatan(e.target.value)} className="rounded-xl" /></div>
+              <Button variant="hero" className="w-full" onClick={simpan} disabled={sibuk}>{sibuk && <Loader2 className="animate-spin" />} Simpan bayaran</Button>
             </div>
           )}
         </DialogContent>

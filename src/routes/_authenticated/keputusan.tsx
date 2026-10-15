@@ -63,9 +63,9 @@ function Keputusan() {
           <h2 className="font-bold">Butiran keputusan</h2>
           <div className="mt-2 divide-y divide-border">
             <Baris label="Tarikh kelulusan" nilai={masa(p.tarikh_keputusan)} />
-            <Baris label="Jumlah dipohon" nilai={rm(p.jumlah_dipohon)} />
+            <Baris label="Jumlah dipohon" nilai={(p.jumlah_dipohon == null ? "Had ditentukan selepas semakan" : rm(p.jumlah_dipohon))} />
             <Baris label="Had diluluskan" nilai={rm(p.had_kredit)} />
-            {produk.data && <Baris label="Kadar faedah" nilai={`${Number(produk.data.kadar_faedah_bulanan)}% sebulan (flat)`} />}
+            {produk.data && <Baris label="Kadar faedah" nilai={`${Number(produk.data.kadar_faedah_bulanan)}% seminggu (flat)`} />}
             {produk.data && <Baris label="Pilihan tenor" nilai={`${produk.data.pilihan_tenor.join(", ")} hari`} />}
             {p.catatan_admin && <Baris label="Catatan" nilai={p.catatan_admin} />}
           </div>
@@ -88,7 +88,7 @@ function Keputusan() {
             <p className="whitespace-pre-line text-sm text-muted-foreground">{produk.data?.syarat}</p>
             {produk.data && (
               <ul className="mt-2 space-y-1 text-sm">
-                <li>• Faedah: {Number(produk.data.kadar_faedah_bulanan)}% sebulan atas pokok</li>
+                <li>• Faedah: {Number(produk.data.kadar_faedah_bulanan)}% seminggu atas pokok</li>
                 <li>• Yuran pemprosesan: {Number(produk.data.yuran_pemprosesan)}% sekali</li>
                 {Number(produk.data.denda_lewat) > 0 && <li>• Caj lewat: {rm(produk.data.denda_lewat)} setiap ansuran lewat</li>}
               </ul>

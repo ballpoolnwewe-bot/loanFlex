@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep application validation in the shared permohonan schema so the form and rule tests agree.
+- Version submission RPC changes in database-update SQL alongside client types so existing installations can upgrade safely.

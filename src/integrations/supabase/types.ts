@@ -127,10 +127,12 @@ export type Database = {
           emel: string
           foto_kp_path: string
           foto_selfie_path: string
+          foto_slip_gaji_path: string | null
+          kontak_darurat: Json
           gaji_bulanan: number
           had_kredit: number | null
           id: string
-          jumlah_dipohon: number
+          jumlah_dipohon: number | null
           keputusan_dilihat: boolean
           majikan: string
           nama_penuh: string
@@ -153,10 +155,12 @@ export type Database = {
           emel: string
           foto_kp_path: string
           foto_selfie_path: string
+          foto_slip_gaji_path: string | null
+          kontak_darurat?: Json
           gaji_bulanan: number
           had_kredit?: number | null
           id?: string
-          jumlah_dipohon: number
+          jumlah_dipohon: number | null
           keputusan_dilihat?: boolean
           majikan?: string
           nama_penuh: string
@@ -179,10 +183,12 @@ export type Database = {
           emel?: string
           foto_kp_path?: string
           foto_selfie_path?: string
+          foto_slip_gaji_path?: string | null
+          kontak_darurat?: Json
           gaji_bulanan?: number
           had_kredit?: number | null
           id?: string
-          jumlah_dipohon?: number
+          jumlah_dipohon?: number | null
           keputusan_dilihat?: boolean
           majikan?: string
           nama_penuh?: string
@@ -489,6 +495,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      admin_rekod_bayaran: {
+        Args: { _catatan: string; _jumlah: number; _pinjaman_id: string; _rujukan: string }
+        Returns: undefined
+      }
       admin_tetap_admin: {
         Args: { _admin: boolean; _user: string }
         Returns: undefined
@@ -524,7 +534,8 @@ export type Database = {
           _foto_kp: string
           _foto_selfie: string
           _gaji: number
-          _jumlah: number
+          _kontak_darurat: Json
+          _foto_slip_gaji: string
           _majikan: string
           _nama_penuh: string
           _no_kp: string

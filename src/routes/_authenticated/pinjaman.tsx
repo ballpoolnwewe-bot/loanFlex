@@ -59,7 +59,7 @@ function Pinjaman() {
             )}
             <div className="mt-4 divide-y divide-border">
               <Baris label="Pokok" nilai={rm(semasa.jumlah_pokok)} />
-              <Baris label={`Faedah (${Number(semasa.kadar_faedah_bulanan)}%/bln × ${semasa.tenor_bulan}/30 hari)`} nilai={rm(semasa.jumlah_faedah)} />
+              <Baris label={`Faedah (${Number(semasa.kadar_faedah_bulanan)}%/minggu × ${semasa.tenor_bulan}/7 hari)`} nilai={rm(semasa.jumlah_faedah)} />
               <Baris label={`Yuran pemprosesan (${Number(semasa.yuran_pemprosesan)}%)`} nilai={rm(semasa.jumlah_yuran)} />
               <Baris label="Jumlah kewajipan" nilai={<span className="text-primary">{rm(semasa.jumlah_kewajipan)}</span>} />
               <Baris label="Tenor" nilai={`${semasa.tenor_bulan} hari`} />
@@ -157,7 +157,7 @@ function BorangPencairan({ had, produk }: { had: number; produk: NonNullable<Ret
         <h2 className="font-bold">Ringkasan kos</h2>
         <div className="mt-3 divide-y divide-border">
           <Baris label="Pokok" nilai={rm(jumlah)} />
-          <Baris label={`Faedah (${Number(produk.kadar_faedah_bulanan)}% × ${tenor}/30 hari)`} nilai={rm(k.faedah)} />
+          <Baris label={`Faedah (${Number(produk.kadar_faedah_bulanan)}%/minggu × ${tenor}/7 hari)`} nilai={rm(k.faedah)} />
           <Baris label={`Yuran (${Number(produk.yuran_pemprosesan)}%)`} nilai={rm(k.yuran)} />
           <Baris label="Jumlah kewajipan" nilai={<span className="text-primary">{rm(k.jumlah)}</span>} />
         </div>

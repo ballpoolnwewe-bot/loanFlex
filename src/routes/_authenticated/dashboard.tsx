@@ -92,7 +92,7 @@ function Dashboard() {
                 })}
               </div>
               <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
-                <div><p className="text-muted-foreground">Jumlah dipohon</p><p className="font-semibold">{rm(terkini.jumlah_dipohon)}</p></div>
+                <div><p className="text-muted-foreground">Jumlah dipohon</p><p className="font-semibold">{(terkini.jumlah_dipohon == null ? "Had ditentukan selepas semakan" : rm(terkini.jumlah_dipohon))}</p></div>
                 <div><p className="text-muted-foreground">Tarikh hantar</p><p className="font-semibold">{tarikh(terkini.created_at)}</p></div>
               </div>
               {(terkini.status === "lulus" || terkini.status === "ditolak") && (

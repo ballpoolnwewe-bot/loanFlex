@@ -27,7 +27,7 @@ function Riwayat() {
           <div className="mt-3 divide-y divide-border">
             {perm.data.map((p) => (
               <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm">
-                <div><p className="font-semibold">{rm(p.jumlah_dipohon)} · {p.tujuan}</p><p className="text-xs text-muted-foreground">{masa(p.created_at)}{p.had_kredit ? ` · Had ${rm(p.had_kredit)}` : ""}</p></div>
+                <div><p className="font-semibold">{(p.jumlah_dipohon == null ? "Had ditentukan selepas semakan" : rm(p.jumlah_dipohon))} · {p.tujuan}</p><p className="text-xs text-muted-foreground">{masa(p.created_at)}{p.had_kredit ? ` · Had ${rm(p.had_kredit)}` : ""}</p></div>
                 <Lencana peta={STATUS_PERMOHONAN} status={p.status} />
               </div>
             ))}
