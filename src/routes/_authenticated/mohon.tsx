@@ -107,12 +107,12 @@ function Mohon() {
     </div>
   );
 
-  const Fail = ({ label, fail, setFail }: { label: string; fail: File | null; setFail: (f: File | null) => void }) => (
+  const Fail = ({ label, fail, setFail, kamera }: { label: string; fail: File | null; setFail: (f: File | null) => void; kamera?: "user" | "environment" }) => (
     <label className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed p-6 text-center transition ${fail ? "border-success bg-success/5" : "border-border hover:border-primary hover:bg-secondary/50"}`}>
       {fail ? <CheckCircle2 className="size-6 text-success" /> : <Upload className="size-6 text-primary" />}
       <span className="text-sm font-semibold">{label}</span>
-      <span className="max-w-full truncate text-xs text-muted-foreground">{fail ? fail.name : "JPG/PNG/WEBP, maks 5MB"}</span>
-      <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(e) => setFail(e.target.files?.[0] ?? null)} />
+      <span className="max-w-full truncate text-xs text-muted-foreground">{fail ? fail.name : kamera ? "Ambil foto terus guna kamera" : "JPG/PNG/WEBP, maks 5MB"}</span>
+      <input type="file" accept="image/jpeg,image/png,image/webp" {...(kamera ? { capture: kamera } : {})} className="sr-only" onChange={(e) => setFail(e.target.files?.[0] ?? null)} />
     </label>
   );
 
@@ -158,8 +158,8 @@ function Mohon() {
           <h2 className="flex items-center gap-2 font-bold"><ShieldCheck className="size-5 text-accent" /> Dokumen permohonan</h2>
           <p className="text-sm text-muted-foreground">Disimpan secara peribadi; hanya anda dan pentadbir boleh melihatnya.</p>
           <div className="grid gap-4 sm:grid-cols-2">
-            <Fail label="Gambar kad pengenalan" fail={kp} setFail={setKp} />
-            <Fail label="Swafoto bersama KP" fail={selfie} setFail={setSelfie} />
+            <Fail label="Gambar kad pengenalan" fail={kp} setFail={setKp} kamera="environment" />
+            <Fail label="Swafoto bersama KP" fail={selfie} setFail={setSelfie} kamera="user" />
             <Fail label="Foto slip gaji" fail={slip} setFail={setSlip} />
           </div>
         </section>
