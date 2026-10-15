@@ -1,3 +1,4 @@
+import { waLink, salamMasa } from "@/lib/whatsapp";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -78,7 +79,19 @@ function Pembayaran() {
               {seterusnya && <p className="mt-2 text-sm text-navy-foreground/70">Jatuh tempo {tarikh(seterusnya.tarikh_jatuh_tempo, true)}</p>}
               <div className="mt-6 space-y-2"><Bar nilai={peratus} /><p className="text-xs text-navy-foreground/70">Baki keseluruhan {rm(baki)} · {peratus.toFixed(0)}% selesai</p></div>
               <Button asChild variant="hero" size="xl" className="mt-6 w-full sm:w-auto" disabled={!seterusnya}>
-                <a href={waLink(`Saya ingin membayar ansuran${seterusnya ? ` #${seterusnya.bil} sebanyak ${rm(seterusnya.jumlah)}` : ""}.`)} target="_blank" rel="noopener noreferrer"><MessageCircle /> Bayar via WhatsApp</a>
+                <a
+  href={waLink()}
+  onClick={(e) => {
+    e.currentTarget.href = waLink(
+      `${salamMasa()}, saya ingin membayar ansuran${seterusnya ? ` #${seterusnya.bil} sebanyak ${rm(seterusnya.jumlah)}` : ""}.` +
+      (semasa.rujukan_pencairan ? `\nID Transaksi: ${semasa.rujukan_pencairan}` : "")
+    );
+  }}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <MessageCircle /> Bayar via WhatsApp
+</a>
               </Button>
               <p className="mt-3 flex items-center gap-1.5 text-xs text-navy-foreground/60"><ShieldCheck className="size-3.5" /> Pembayaran diuruskan oleh khidmat pelanggan kami melalui WhatsApp.</p>
             </div>
