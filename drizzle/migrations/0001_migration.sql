@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.cipta_transaksi(uuid,text) TO authenticated;
