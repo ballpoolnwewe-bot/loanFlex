@@ -36,7 +36,7 @@ function Laman() {
         <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 pb-20 pt-8 md:grid-cols-2 md:pb-28 md:pt-14">
           <div className="animate-rise">
             <span className="inline-flex items-center gap-2 rounded-full border border-navy-foreground/20 bg-navy-foreground/10 px-3 py-1 text-xs font-semibold">
-              <ShieldCheck className="size-3.5 text-accent" /> Data dilindungi & disulitkan
+              <ShieldCheck className="size-3.5 text-accent" /> Your Data Is Protected & Encrypted
             </span>
             <h1 className="mt-5 text-4xl font-extrabold leading-[1.05] md:text-6xl">
               Pinjaman mudah, <span className="text-accent">hidup lebih fleksibel.</span>
