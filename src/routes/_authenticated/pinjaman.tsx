@@ -65,7 +65,7 @@ function Pinjaman() {
               <Baris label="Tenor" nilai={`${semasa.tenor_bulan} hari`} />
               <Baris label="Akaun penerima" nilai={`${semasa.nama_bank} ••••${semasa.no_akaun.slice(-4)}`} />
               <Baris label="Tarikh dicairkan" nilai={masa(semasa.tarikh_dicairkan)} />
-              {semasa.rujukan_pencairan && <Baris label="Rujukan pindahan" nilai={semasa.rujukan_pencairan} />}
+              {semasa.rujukan_pencairan && <Baris label="Transaction ID" nilai={semasa.rujukan_pencairan} />}
             </div>
           </div>
           <div className="surface p-6 lg:col-span-3">
