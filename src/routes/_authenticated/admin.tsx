@@ -169,9 +169,10 @@ function DetailPermohonan({ p, tutup }: { p: Permohonan; tutup: () => void }) {
       <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto rounded-2xl">
         <DialogHeader><DialogTitle className="flex items-center gap-3">{p.nama_penuh} <Lencana peta={STATUS_PERMOHONAN} status={p.status} /></DialogTitle></DialogHeader>
         <div className="grid gap-x-6 sm:grid-cols-2">
-          {[["No. KP", p.no_kad_pengenalan], ["Telefon", p.no_telefon], ["Emel", p.emel], ["Pekerjaan", p.pekerjaan], ["Majikan", p.majikan || "-"], ["Pengalaman", `${p.pengalaman_tahun} tahun`], ["Gaji bulanan", rm(p.gaji_bulanan)], ["Tujuan", p.tujuan], ["Dihantar", masa(p.created_at)]].map(([l, v]) => <Baris key={l} label={l} nilai={v} />)}
+          {[["No. KP", p.no_kad_pengenalan], ["Telefon", p.no_telefon], ["Emel", p.emel], ["Pekerjaan", p.pekerjaan], ["Industri pekerjaan / bidang", p.industri || "-"], ["Pengalaman", `${p.pengalaman_tahun} tahun`], ["Gaji bulanan", rm(p.gaji_bulanan)], ["Tujuan", p.tujuan], ["Dihantar", masa(p.created_at)]].map(([l, v]) => <Baris key={l} label={l} nilai={v} />)}
         </div>
         <Baris label="Alamat" nilai={p.alamat} />
+        <Baris label="Alamat pekerjaan" nilai={p.alamat_pekerjaan || "-"} />
         {Array.isArray(p.kontak_darurat) && p.kontak_darurat.length > 0 && (
           <section className="space-y-2">
             <h3 className="font-bold">Kontak darurat</h3>

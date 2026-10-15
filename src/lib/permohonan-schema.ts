@@ -1,9 +1,17 @@
 import { z } from "zod";
 
+export const PILIHAN_INDUSTRI = [
+  "Pertanian / Perikanan", "Pembinaan", "Pembuatan / Kilang", "Peruncitan / Jualan",
+  "Makanan & Minuman", "Pengangkutan / Logistik", "Teknologi Maklumat", "Kewangan / Insurans",
+  "Pendidikan", "Kesihatan", "Hospitaliti / Pelancongan", "Kerajaan / Perkhidmatan Awam",
+  "Perkhidmatan Profesional", "Kecantikan / Penjagaan Diri", "Keselamatan", "Lain-lain",
+] as const;
+export const PILIHAN_HUBUNGAN = ["Suami", "Isteri", "Ibu", "Bapa", "Anak", "Abang", "Kakak", "Adik", "Saudara", "Rakan", "Rakan sekerja", "Lain-lain"] as const;
+
 export const skemaKontak = z.object({
   nama: z.string().trim().min(3, "Nama kontak darurat wajib diisi").max(120),
   telefon: z.string().trim().regex(/^\+?[0-9]{9,15}$/, "No. telefon kontak darurat tidak sah"),
-  hubungan: z.string().trim().min(2, "Hubungan kontak darurat wajib diisi").max(80),
+  hubungan: z.enum(PILIHAN_HUBUNGAN, { errorMap: () => ({ message: "Sila pilih hubungan kontak darurat" }) }),
 });
 
 export const skemaPermohonan = z.object({
@@ -12,7 +20,8 @@ export const skemaPermohonan = z.object({
   telefon: z.string().trim().regex(/^\+?[0-9]{9,15}$/, "No. telefon tidak sah"),
   alamat: z.string().trim().min(10, "Alamat tidak lengkap").max(500),
   pekerjaan: z.string().trim().min(2, "Pekerjaan wajib diisi").max(100),
-  majikan: z.string().trim().max(150),
+  industri: z.enum(PILIHAN_INDUSTRI, { errorMap: () => ({ message: "Sila pilih industri pekerjaan / bidang" }) }),
+  alamat_pekerjaan: z.string().trim().min(10, "Alamat pekerjaan tidak lengkap").max(500),
   pengalaman: z.coerce.number().min(0).max(60),
   gaji: z.coerce.number().positive("Gaji tidak sah").max(1_000_000),
   tujuan: z.string().trim().min(3, "Tujuan wajib diisi").max(300),

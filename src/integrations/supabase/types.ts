@@ -120,6 +120,8 @@ export type Database = {
       }
       permohonan: {
         Row: {
+          industri: string
+          alamat_pekerjaan: string
           sebab_sekat: string | null
           sebab_edit: string | null
           alamat: string
@@ -152,6 +154,8 @@ export type Database = {
         Insert: {
           sebab_sekat?: string | null
           sebab_edit?: string | null
+          industri?: string
+          alamat_pekerjaan?: string
           alamat: string
           catatan_admin?: string | null
           created_at?: string
@@ -182,6 +186,8 @@ export type Database = {
         Update: {
           sebab_sekat?: string | null
           sebab_edit?: string | null
+          industri?: string
+          alamat_pekerjaan?: string
           alamat?: string
           catatan_admin?: string | null
           created_at?: string
@@ -545,12 +551,13 @@ export type Database = {
       hantar_permohonan: {
         Args: {
           _alamat: string
+          _alamat_pekerjaan: string
+          _industri: string
           _foto_kp: string
           _foto_selfie: string
           _gaji: number
           _kontak_darurat: Json
           _foto_slip_gaji: string
-          _majikan: string
           _nama_penuh: string
           _no_kp: string
           _no_telefon: string

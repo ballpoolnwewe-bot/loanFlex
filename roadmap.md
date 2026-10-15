@@ -1,3 +1,5 @@
 - [x] Remove requested-amount information from application screens and admin approval.
 - [x] Replace Malaysia time with the client device timezone.
 - [x] Verify timezone rules and package revised source ZIP.
+- [x] Add workplace address, industry selection, and emergency relationship selections.
+- [x] Verify changed form rules and package revised ZIP with database upgrade instructions.

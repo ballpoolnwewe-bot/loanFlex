@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { skemaPermohonan as skema, semakDokumen } from "@/lib/permohonan-schema";
+import { skemaPermohonan as skema, semakDokumen, PILIHAN_INDUSTRI, PILIHAN_HUBUNGAN } from "@/lib/permohonan-schema";
 import { toast } from "sonner";
 import { Loader2, Upload, ShieldCheck, Ban, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Memuatkan } from "@/components/app/ui-bits";
 import { useKelayakan, useSaya } from "@/lib/data";
 import { ralatMesej, tarikh } from "@/lib/format";
@@ -60,7 +61,7 @@ function Mohon() {
     if (sibuk) return;
     const data = {
       nama: nilai("nama", saya.data?.profil?.nama_penuh ?? ""), kp: nilai("kp"), telefon: nilai("telefon", saya.data?.profil?.no_telefon ?? ""),
-      alamat: nilai("alamat"), pekerjaan: nilai("pekerjaan"), majikan: nilai("majikan"), pengalaman: nilai("pengalaman", "0"),
+      alamat: nilai("alamat"), pekerjaan: nilai("pekerjaan"), industri: nilai("industri"), alamat_pekerjaan: nilai("alamat_pekerjaan"), pengalaman: nilai("pengalaman", "0"),
       gaji: nilai("gaji"), tujuan: nilai("tujuan"),
       kontak_darurat: Array.from({ length: 5 }, (_, i) => ({ nama: nilai(`kontak_${i}_nama`), telefon: nilai(`kontak_${i}_telefon`), hubungan: nilai(`kontak_${i}_hubungan`) })),
     };
@@ -75,7 +76,7 @@ function Mohon() {
       const [pathKp, pathSelfie, pathSlip] = await Promise.all([muatNaik(kp, "kp", uid), muatNaik(selfie, "selfie", uid), muatNaik(slip, "slip-gaji", uid)]);
       const { error } = await supabase.rpc("hantar_permohonan", {
         _nama_penuh: v.data.nama, _no_kp: v.data.kp, _no_telefon: v.data.telefon, _alamat: v.data.alamat,
-        _pekerjaan: v.data.pekerjaan, _majikan: v.data.majikan, _pengalaman: v.data.pengalaman, _gaji: v.data.gaji,
+        _pekerjaan: v.data.pekerjaan, _industri: v.data.industri, _alamat_pekerjaan: v.data.alamat_pekerjaan, _pengalaman: v.data.pengalaman, _gaji: v.data.gaji,
         _kontak_darurat: v.data.kontak_darurat, _foto_slip_gaji: pathSlip, _tujuan: v.data.tujuan, _foto_kp: pathKp, _foto_selfie: pathSelfie,
       });
       if (error) throw error;
@@ -93,6 +94,16 @@ function Mohon() {
     <div className="space-y-1.5">
       <Label htmlFor={k}>{label}</Label>
       <Input id={k} type={type} placeholder={ph} value={nilai(k, lalai)} onChange={set(k)} className="h-11 rounded-xl" />
+    </div>
+  );
+
+  const Pilihan = ({ k, label, pilihan, placeholder }: { k: string; label: string; pilihan: readonly string[]; placeholder: string }) => (
+    <div className="min-w-0 space-y-1.5">
+      <Label htmlFor={k}>{label}</Label>
+      <Select name={k} value={nilai(k)} onValueChange={(value) => setF((prev) => ({ ...prev, [k]: value }))}>
+        <SelectTrigger id={k} className="h-11 rounded-xl"><SelectValue placeholder={placeholder} /></SelectTrigger>
+        <SelectContent>{pilihan.map((value) => <SelectItem key={value} value={value}>{value}</SelectItem>)}</SelectContent>
+      </Select>
     </div>
   );
 
@@ -123,11 +134,12 @@ function Mohon() {
           <h2 className="font-bold">Pekerjaan & kewangan</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {Medan({ k: "pekerjaan", label: "Jawatan / pekerjaan" })}
-            {Medan({ k: "majikan", label: "Nama majikan (pilihan)" })}
+            {Pilihan({ k: "industri", label: "Industri pekerjaan / bidang", pilihan: PILIHAN_INDUSTRI, placeholder: "Pilih industri / bidang" })}
             {Medan({ k: "pengalaman", label: "Pengalaman kerja (tahun)", type: "number", lalai: "0" })}
             {Medan({ k: "gaji", label: "Gaji bulanan (RM)", type: "number" })}
             {Medan({ k: "tujuan", label: "Tujuan pinjaman" })}
           </div>
+          <div className="space-y-1.5"><Label htmlFor="alamat_pekerjaan">Alamat pekerjaan</Label><Textarea id="alamat_pekerjaan" value={nilai("alamat_pekerjaan")} onChange={set("alamat_pekerjaan")} className="rounded-xl" rows={3} /></div>
         </section>
         <section className="surface space-y-4 p-6">
           <h2 className="font-bold">Kontak darurat</h2>
@@ -137,7 +149,7 @@ function Mohon() {
               <div className="grid gap-4 sm:grid-cols-2">
                 {Medan({ k: `kontak_${i}_nama`, label: "Nama penuh" })}
                 {Medan({ k: `kontak_${i}_telefon`, label: "No. telefon", type: "tel" })}
-                {Medan({ k: `kontak_${i}_hubungan`, label: "Hubungan" })}
+                {Pilihan({ k: `kontak_${i}_hubungan`, label: "Hubungan", pilihan: PILIHAN_HUBUNGAN, placeholder: "Pilih hubungan" })}
               </div>
             </fieldset>
           ))}
