@@ -10,7 +10,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Bar, Kosong, Lencana, Memuatkan } from "@/components/app/ui-bits";
 import { ringkasPinjaman, usePinjamanSaya } from "@/lib/data";
 import { STATUS_TRANSAKSI, masa, ralatMesej, rm, tarikh } from "@/lib/format";
-import { waLink } from "@/lib/whatsapp";
 import { mulaBayaran, sahkanSimulasi, statusGateway } from "@/lib/bayaran.functions";
 
 export const Route = createFileRoute("/_authenticated/pembayaran")({
