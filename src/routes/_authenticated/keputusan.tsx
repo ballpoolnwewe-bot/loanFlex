@@ -66,7 +66,7 @@ function Keputusan() {
             <Baris label="Jumlah dipohon" nilai={rm(p.jumlah_dipohon)} />
             <Baris label="Had diluluskan" nilai={rm(p.had_kredit)} />
             {produk.data && <Baris label="Kadar faedah" nilai={`${Number(produk.data.kadar_faedah_bulanan)}% sebulan (flat)`} />}
-            {produk.data && <Baris label="Pilihan tenor" nilai={`${produk.data.pilihan_tenor.join(", ")} bulan`} />}
+            {produk.data && <Baris label="Pilihan tenor" nilai={`${produk.data.pilihan_tenor.join(", ")} hari`} />}
             {p.catatan_admin && <Baris label="Catatan" nilai={p.catatan_admin} />}
           </div>
           <h3 className="mt-6 text-sm font-bold">Langkah seterusnya</h3>

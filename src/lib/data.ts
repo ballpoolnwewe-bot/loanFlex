@@ -123,8 +123,8 @@ export function ringkasPinjaman(d: { pinjaman: Pinjaman[]; ansuran: Ansuran[]; t
 
 export function kiraPinjaman(pokok: number, tenor: number, p?: Produk | null) {
   if (!p) return { faedah: 0, yuran: 0, jumlah: 0, bulanan: 0 };
-  const faedah = Math.round(pokok * (Number(p.kadar_faedah_bulanan) / 100) * tenor * 100) / 100;
+  const faedah = Math.round(pokok * (Number(p.kadar_faedah_bulanan) / 100) * (tenor / 30) * 100) / 100;
   const yuran = Math.round(pokok * (Number(p.yuran_pemprosesan) / 100) * 100) / 100;
   const jumlah = Math.round((pokok + faedah + yuran) * 100) / 100;
-  return { faedah, yuran, jumlah, bulanan: tenor ? Math.round((jumlah / tenor) * 100) / 100 : 0 };
+  return { faedah, yuran, jumlah, bulanan: jumlah };
 }

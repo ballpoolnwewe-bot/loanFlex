@@ -4,7 +4,7 @@ import { ShieldCheck, Zap, BadgePercent, ArrowRight, FileCheck2, Banknote, Calen
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/app/ui-bits";
 import { supabase } from "@/integrations/supabase/client";
-import heroAsset from "@/assets/hero.jpg.asset.json";
+import heroImg from "@/assets/hero.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -50,13 +50,13 @@ function Laman() {
               </Button>
             </div>
             <div className="mt-10 grid max-w-md grid-cols-3 gap-4 text-sm">
-              {[["RM500", "minimum"], ["RM25k", "maksimum"], ["3-12", "bulan tenor"]].map(([a, b]) => (
+              {[["RM50", "minimum"], ["RM10k", "maksimum"], ["14-30", "hari tenor"]].map(([a, b]) => (
                 <div key={b}><p className="font-display text-2xl font-bold">{a}</p><p className="text-navy-foreground/60">{b}</p></div>
               ))}
             </div>
           </div>
           <div className="relative animate-rise [animation-delay:150ms]">
-            <img src={heroAsset.url} alt="Pengguna menguruskan kewangan" className="aspect-[4/3] w-full rounded-3xl object-cover shadow-glow" />
+            <img src={heroImg} alt="Pengguna menguruskan kewangan" className="aspect-[4/3] w-full rounded-3xl object-cover shadow-glow" />
             <div className="surface absolute -bottom-6 left-4 flex items-center gap-3 p-4 text-foreground md:-left-8">
               <span className="flex size-11 items-center justify-center rounded-xl bg-success-grad text-success-foreground"><FileCheck2 className="size-5" /></span>
               <div><p className="text-xs text-muted-foreground">Status permohonan</p><p className="font-display font-bold">Diluluskan</p></div>
@@ -71,7 +71,7 @@ function Laman() {
           {[
             { i: FileCheck2, t: "Hantar permohonan", d: "Isi maklumat dan muat naik dokumen pengenalan secara selamat." },
             { i: Banknote, t: "Terima keputusan & had", d: "Admin menilai dan menetapkan had kredit. Keputusan dipaparkan sebaik anda membuka aplikasi." },
-            { i: CalendarCheck, t: "Cairkan & bayar ansuran", d: "Pilih jumlah dan tenor, kemudian bayar ansuran bulanan melalui gerbang pembayaran." },
+            { i: CalendarCheck, t: "Cairkan & bayar ansuran", d: "Pilih jumlah dan tenor, kemudian bayar melalui WhatsApp." },
           ].map((s, n) => (
             <div key={s.t} className="surface p-6 animate-rise" style={{ animationDelay: `${n * 100}ms` }}>
               <span className="flex size-12 items-center justify-center rounded-2xl bg-brand text-primary-foreground"><s.i className="size-5" /></span>

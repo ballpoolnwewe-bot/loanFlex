@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Search, Users, FileText, Banknote, Receipt, Settings, ScrollText, Loader2, ShieldAlert, Clock, CheckCircle2, Send } from "lucide-react";
+import { janaIdTransaksi } from "@/lib/whatsapp";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -199,7 +200,7 @@ function TabPencairan({ senarai, nama }: { senarai: Pinjaman[]; nama: (id: strin
   const [rujukan, setRujukan] = useState<Record<string, string>>({});
   const proses = async (p: Pinjaman, lulus: boolean) => {
     const catatan = lulus ? "" : prompt("Sebab pencairan ditolak:") ?? "";
-    const { error } = await supabase.rpc("admin_proses_pencairan", { _id: p.id, _lulus: lulus, _rujukan: rujukan[p.id] ?? "", _catatan: catatan });
+    const { error } = await supabase.rpc("admin_proses_pencairan", { _id: p.id, _lulus: lulus, _rujukan: lulus ? janaIdTransaksi() : "", _catatan: catatan });
     if (error) return toast.error(ralatMesej(error));
     toast.success(lulus ? "Dana ditanda dicairkan & jadual dijana." : "Pencairan ditolak.");
     qc.invalidateQueries();
@@ -210,12 +211,12 @@ function TabPencairan({ senarai, nama }: { senarai: Pinjaman[]; nama: (id: strin
       {senarai.map((p) => (
         <div key={p.id} className="surface p-4 text-sm">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div><p className="font-semibold">{nama(p.user_id)} · {rm(p.jumlah_pokok)} / {p.tenor_bulan} bln</p><p className="text-xs text-muted-foreground">{p.nama_bank} · {p.nama_pemegang_akaun} · {p.no_akaun} · Kewajipan {rm(p.jumlah_kewajipan)} · Dibayar {rm(p.jumlah_dibayar)}</p></div>
+            <div><p className="font-semibold">{nama(p.user_id)} · {rm(p.jumlah_pokok)} / {p.tenor_bulan} hari</p><p className="text-xs text-muted-foreground">{p.nama_bank} · {p.nama_pemegang_akaun} · {p.no_akaun} · Kewajipan {rm(p.jumlah_kewajipan)} · Dibayar {rm(p.jumlah_dibayar)}</p></div>
             <Lencana peta={STATUS_PINJAMAN} status={p.status} />
           </div>
           {p.status === "menunggu_pencairan" && (
             <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-              <Input placeholder="Rujukan pindahan bank (wajib)" value={rujukan[p.id] ?? ""} onChange={(e) => setRujukan({ ...rujukan, [p.id]: e.target.value })} className="rounded-xl" />
+              <p className="flex-1 self-center text-xs text-muted-foreground">ID transaksi (TRX…) dijana automatik.</p>
               <Button variant="success" onClick={() => proses(p, true)}>Sahkan dicairkan</Button>
               <Button variant="outline" onClick={() => proses(p, false)}>Tolak</Button>
             </div>
@@ -249,7 +250,7 @@ function TabProduk() {
     <div className="surface space-y-4 p-6">
       <div className="grid gap-4 sm:grid-cols-3">
         {M("kadar", "Faedah (% sebulan, flat)")}{M("yuran", "Yuran pemprosesan (%)")}{M("denda", "Caj lewat (RM)")}
-        {M("tenor", "Pilihan tenor (bulan, koma)")}{M("min", "Jumlah minimum (RM)")}{M("max", "Jumlah maksimum (RM)")}
+        {M("tenor", "Pilihan tenor (hari, koma)")}{M("min", "Jumlah minimum (RM)")}{M("max", "Jumlah maksimum (RM)")}
       </div>
       <div className="space-y-1.5"><Label>Syarat pinjaman</Label><Textarea rows={5} value={f.syarat} onChange={(e) => setF({ ...f, syarat: e.target.value })} className="rounded-xl" /></div>
       <Button variant="hero" onClick={simpan}>Simpan tetapan</Button>

@@ -40,7 +40,7 @@ function Riwayat() {
           <div className="mt-3 divide-y divide-border">
             {pin.data.pinjaman.map((p) => (
               <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm">
-                <div><p className="font-semibold">{rm(p.jumlah_pokok)} · {p.tenor_bulan} bulan</p><p className="text-xs text-muted-foreground">Dimohon {tarikh(p.created_at)} · Kewajipan {rm(p.jumlah_kewajipan)}</p></div>
+                <div><p className="font-semibold">{rm(p.jumlah_pokok)} · {p.tenor_bulan} hari</p><p className="text-xs text-muted-foreground">Dimohon {tarikh(p.created_at)} · Kewajipan {rm(p.jumlah_kewajipan)}</p></div>
                 <Lencana peta={STATUS_PINJAMAN} status={p.status} />
               </div>
             ))}

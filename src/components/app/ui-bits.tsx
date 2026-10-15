@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Loader2, Inbox } from "lucide-react";
 import { cn } from "@/lib/utils";
-import markAsset from "@/assets/mark.png.asset.json";
+import markImg from "@/assets/mark.png";
 
 export function Lencana({ peta, status }: { peta: Record<string, { label: string; tone: string }>; status: string }) {
   const s = peta[status] ?? { label: status, tone: "bg-muted text-muted-foreground" };
@@ -16,7 +16,7 @@ export function Lencana({ peta, status }: { peta: Record<string, { label: string
 export function Logo({ terang = false }: { terang?: boolean }) {
   return (
     <span className="flex items-center gap-2">
-      <img src={markAsset.url} alt="" className="size-9 rounded-xl bg-card object-contain p-0.5" />
+      <img src={markImg} alt="" className="size-9 rounded-xl bg-card object-contain p-0.5" />
       <span className={cn("font-display text-lg font-bold tracking-tight", terang ? "text-navy-foreground" : "text-navy")}>
         Ringgit<span className="text-accent">Flex</span>
       </span>

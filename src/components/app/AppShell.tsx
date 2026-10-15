@@ -1,4 +1,6 @@
 import { useState, type ReactNode } from "react";
+import { waLink } from "@/lib/whatsapp";
+import { Headset } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { Bell, LayoutDashboard, FilePlus2, Wallet, CreditCard, History, ShieldCheck, LogOut, CheckCheck } from "lucide-react";
@@ -56,6 +58,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-6 md:py-10">{children}</main>
+      <a href={waLink("Halo, saya perlukan bantuan.")} target="_blank" rel="noopener noreferrer" aria-label="Khidmat pelanggan WhatsApp" className="fixed bottom-24 right-4 z-50 flex size-14 items-center justify-center rounded-full bg-success text-success-foreground shadow-lg transition-transform hover:scale-105 md:bottom-6"><Headset className="size-7" /></a>
 
       <nav className="fixed inset-x-3 bottom-3 z-40 flex justify-around rounded-2xl border border-border bg-card/95 p-1.5 shadow-glow backdrop-blur md:hidden">
         {NAV.map((n) => (

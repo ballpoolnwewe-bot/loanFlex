@@ -3,12 +3,13 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { CreditCard, Loader2, FlaskConical, ShieldCheck, Receipt } from "lucide-react";
+import { CreditCard, Loader2, FlaskConical, ShieldCheck, Receipt, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Bar, Kosong, Lencana, Memuatkan } from "@/components/app/ui-bits";
 import { ringkasPinjaman, usePinjamanSaya } from "@/lib/data";
 import { STATUS_TRANSAKSI, masa, ralatMesej, rm, tarikh } from "@/lib/format";
+import { waLink } from "@/lib/whatsapp";
 import { mulaBayaran, sahkanSimulasi, statusGateway } from "@/lib/bayaran.functions";
 
 export const Route = createFileRoute("/_authenticated/pembayaran")({
@@ -82,10 +83,10 @@ function Pembayaran() {
               <p className="mt-1 font-display text-5xl font-extrabold">{seterusnya ? rm(seterusnya.jumlah) : rm(0)}</p>
               {seterusnya && <p className="mt-2 text-sm text-navy-foreground/70">Jatuh tempo {tarikh(seterusnya.tarikh_jatuh_tempo, true)}</p>}
               <div className="mt-6 space-y-2"><Bar nilai={peratus} /><p className="text-xs text-navy-foreground/70">Baki keseluruhan {rm(baki)} · {peratus.toFixed(0)}% selesai</p></div>
-              <Button variant="hero" size="xl" className="mt-6 w-full sm:w-auto" onClick={bayar} disabled={!seterusnya || sibuk || gw.isLoading}>
-                {sibuk ? <Loader2 className="animate-spin" /> : <CreditCard />} Bayar sekarang
+              <Button asChild variant="hero" size="xl" className="mt-6 w-full sm:w-auto" disabled={!seterusnya}>
+                <a href={waLink(`Saya ingin membayar ansuran${seterusnya ? ` #${seterusnya.bil} sebanyak ${rm(seterusnya.jumlah)}` : ""}.`)} target="_blank" rel="noopener noreferrer"><MessageCircle /> Bayar via WhatsApp</a>
               </Button>
-              <p className="mt-3 flex items-center gap-1.5 text-xs text-navy-foreground/60"><ShieldCheck className="size-3.5" /> Status hanya dikemas kini selepas pengesahan daripada gerbang pembayaran.</p>
+              <p className="mt-3 flex items-center gap-1.5 text-xs text-navy-foreground/60"><ShieldCheck className="size-3.5" /> Pembayaran diuruskan oleh khidmat pelanggan kami melalui WhatsApp.</p>
             </div>
           </div>
           <div className="surface p-6 lg:col-span-2">

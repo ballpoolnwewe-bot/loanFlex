@@ -59,10 +59,10 @@ function Pinjaman() {
             )}
             <div className="mt-4 divide-y divide-border">
               <Baris label="Pokok" nilai={rm(semasa.jumlah_pokok)} />
-              <Baris label={`Faedah (${Number(semasa.kadar_faedah_bulanan)}%/bln × ${semasa.tenor_bulan})`} nilai={rm(semasa.jumlah_faedah)} />
+              <Baris label={`Faedah (${Number(semasa.kadar_faedah_bulanan)}%/bln × ${semasa.tenor_bulan}/30 hari)`} nilai={rm(semasa.jumlah_faedah)} />
               <Baris label={`Yuran pemprosesan (${Number(semasa.yuran_pemprosesan)}%)`} nilai={rm(semasa.jumlah_yuran)} />
               <Baris label="Jumlah kewajipan" nilai={<span className="text-primary">{rm(semasa.jumlah_kewajipan)}</span>} />
-              <Baris label="Tenor" nilai={`${semasa.tenor_bulan} bulan`} />
+              <Baris label="Tenor" nilai={`${semasa.tenor_bulan} hari`} />
               <Baris label="Akaun penerima" nilai={`${semasa.nama_bank} ••••${semasa.no_akaun.slice(-4)}`} />
               <Baris label="Tarikh dicairkan" nilai={masa(semasa.tarikh_dicairkan)} />
               {semasa.rujukan_pencairan && <Baris label="Rujukan pindahan" nilai={semasa.rujukan_pencairan} />}
@@ -128,15 +128,15 @@ function BorangPencairan({ had, produk }: { had: number; produk: NonNullable<Ret
         <h2 className="flex items-center gap-2 font-bold"><Banknote className="size-5 text-primary" /> Permintaan pencairan</h2>
         <div>
           <div className="flex items-end justify-between"><Label>Jumlah pencairan</Label><span className="font-display text-2xl font-bold">{rm(jumlah)}</span></div>
-          <Slider className="mt-4" min={100} max={Math.floor(had)} step={50} value={[jumlah]} onValueChange={(v) => setJumlah(v[0])} />
-          <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>RM100</span><span>{rm(had)}</span></div>
+          <Slider className="mt-4" min={Number(produk.jumlah_minimum)} max={Math.floor(had)} step={50} value={[jumlah]} onValueChange={(v) => setJumlah(v[0])} />
+          <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>{rm(produk.jumlah_minimum)}</span><span>{rm(had)}</span></div>
         </div>
         <div>
           <Label>Tenor</Label>
           <div className="mt-2 flex flex-wrap gap-2">
             {produk.pilihan_tenor.map((t) => (
               <button type="button" key={t} onClick={() => setTenor(t)} className={cn("rounded-xl border px-4 py-2 text-sm font-semibold transition", tenor === t ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-primary")}>
-                {t} bulan
+                {t} hari
               </button>
             ))}
           </div>
@@ -157,12 +157,12 @@ function BorangPencairan({ had, produk }: { had: number; produk: NonNullable<Ret
         <h2 className="font-bold">Ringkasan kos</h2>
         <div className="mt-3 divide-y divide-border">
           <Baris label="Pokok" nilai={rm(jumlah)} />
-          <Baris label={`Faedah (${Number(produk.kadar_faedah_bulanan)}% × ${tenor} bln)`} nilai={rm(k.faedah)} />
+          <Baris label={`Faedah (${Number(produk.kadar_faedah_bulanan)}% × ${tenor}/30 hari)`} nilai={rm(k.faedah)} />
           <Baris label={`Yuran (${Number(produk.yuran_pemprosesan)}%)`} nilai={rm(k.yuran)} />
           <Baris label="Jumlah kewajipan" nilai={<span className="text-primary">{rm(k.jumlah)}</span>} />
         </div>
         <div className="mt-4 rounded-2xl bg-secondary p-4 text-center">
-          <p className="text-xs text-muted-foreground">Anggaran ansuran bulanan</p>
+          <p className="text-xs text-muted-foreground">Bayaran penuh dalam {tenor} hari</p>
           <p className="font-display text-3xl font-bold text-primary">{rm(k.bulanan)}</p>
         </div>
         <p className="mt-3 text-xs text-muted-foreground">Jumlah muktamad dikira dan disahkan oleh sistem semasa permintaan diproses.</p>
