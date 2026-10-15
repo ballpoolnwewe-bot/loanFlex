@@ -120,6 +120,8 @@ export type Database = {
       }
       permohonan: {
         Row: {
+          sebab_sekat: string | null
+          sebab_edit: string | null
           alamat: string
           catatan_admin: string | null
           created_at: string
@@ -148,6 +150,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          sebab_sekat?: string | null
+          sebab_edit?: string | null
           alamat: string
           catatan_admin?: string | null
           created_at?: string
@@ -176,6 +180,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          sebab_sekat?: string | null
+          sebab_edit?: string | null
           alamat?: string
           catatan_admin?: string | null
           created_at?: string
@@ -474,6 +480,14 @@ export type Database = {
           _tenor: number[]
           _yuran: number
         }
+        Returns: undefined
+      }
+      admin_edit_kredit: {
+        Args: { _alasan: string; _had: number; _id: string }
+        Returns: undefined
+      }
+      admin_sekat: {
+        Args: { _alasan: string; _id: string; _sekat: boolean }
         Returns: undefined
       }
       admin_keputusan: {

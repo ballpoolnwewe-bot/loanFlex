@@ -115,7 +115,7 @@ function Keputusan() {
             <div>
               <p className="text-sm font-semibold">Bila boleh memohon semula?</p>
               <p className="text-sm text-muted-foreground">
-                {kel.data?.boleh ? "Anda boleh memohon semula sekarang (maksimum 1 kali permohonan semula dalam tempoh 30 hari)." : kel.data?.boleh_mohon_pada ? `Pada ${tarikh(kel.data.boleh_mohon_pada, true)}.` : kel.data?.sebab}
+                {kel.data?.boleh ? "Anda boleh memohon semula sekarang." : kel.data?.boleh_mohon_pada ? `Pada ${tarikh(kel.data.boleh_mohon_pada, true)}.` : kel.data?.sebab}
               </p>
             </div>
           </div>

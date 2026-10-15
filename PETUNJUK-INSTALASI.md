@@ -47,3 +47,6 @@ bunx vitest run    # menjalankan test
 ## Catatan
 - File `.env` asli tidak disertakan demi keamanan; gunakan `.env.example`.
 - `node_modules` tidak disertakan; jalankan `bun install` setelah ekstrak.
+
+## Pembaruan: satu kali permohonan, edit & sekat
+Jalankan `database-update/satu-permohonan-edit-sekat.sql`. Pengguna hanya boleh memohon sekali; setelah diluluskan tidak boleh memohon lagi. Admin boleh mengedit had kredit dan menyekat/membuka sekatan (wajib alasan). Jika ditolak, pengguna boleh memohon semula selepas 24 jam.

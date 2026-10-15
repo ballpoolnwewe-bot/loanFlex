@@ -116,7 +116,7 @@ function TabPermohonan({ senarai }: { senarai: Permohonan[] }) {
       <div className="flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input placeholder="Cari nama, emel, KP, telefon" value={cari} onChange={(e) => setCari(e.target.value)} className="h-10 rounded-xl pl-9" /></div>
         <div className="flex flex-wrap gap-1">
-          {["semua", "menunggu", "disemak", "lulus", "ditolak", "selesai"].map((s) => (
+          {["semua", "menunggu", "disemak", "lulus", "ditolak", "selesai", "disekat"].map((s) => (
             <button key={s} onClick={() => setTapis(s)} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${tapis === s ? "bg-primary text-primary-foreground" : "bg-secondary"}`}>{s === "semua" ? "Semua" : STATUS_PERMOHONAN[s].label}</button>
           ))}
         </div>
@@ -189,6 +189,8 @@ function DetailPermohonan({ p, tutup }: { p: Permohonan; tutup: () => void }) {
         </div>
         {p.had_kredit && <Baris label="Had diluluskan" nilai={rm(p.had_kredit)} />}
         {p.sebab_tolak && <Baris label="Sebab tolak" nilai={p.sebab_tolak} />}
+        {p.sebab_edit && <Baris label="Alasan edit kredit" nilai={p.sebab_edit} />}
+        {p.sebab_sekat && <Baris label="Alasan sekat" nilai={p.sebab_sekat} />}
         {boleh ? (
           <div className="space-y-3 rounded-2xl bg-secondary/60 p-4">
             <div className="space-y-1.5"><Label>Had kredit (RM {produk.data ? `${Number(produk.data.jumlah_minimum)}–${Number(produk.data.jumlah_maksimum)}` : ""})</Label><Input type="number" value={had} onChange={(e) => setHad(e.target.value)} className="rounded-xl bg-card" /></div>
@@ -200,9 +202,41 @@ function DetailPermohonan({ p, tutup }: { p: Permohonan; tutup: () => void }) {
               <Button variant="destructive" disabled={sibuk} onClick={() => putus("ditolak")}>Tolak</Button>
             </div>
           </div>
-        ) : <p className="flex items-center gap-2 text-sm text-muted-foreground"><ShieldAlert className="size-4" /> Diputuskan pada {masa(p.tarikh_keputusan)}. Keputusan muktamad tidak boleh diubah.</p>}
+        ) : <UrusKredit p={p} tutup={tutup} />}
       </DialogContent>
     </Dialog>
+  );
+}
+
+function UrusKredit({ p, tutup }: { p: Permohonan; tutup: () => void }) {
+  const qc = useQueryClient();
+  const [had, setHad] = useState(p.had_kredit == null ? "" : String(p.had_kredit));
+  const [alasan, setAlasan] = useState("");
+  const [sibuk, setSibuk] = useState(false);
+  const bolehEdit = ["lulus", "selesai", "disekat"].includes(p.status);
+  const bolehSekat = p.status !== "dibatalkan";
+  const jalan = async (fn: () => PromiseLike<{ error: unknown }>, msg: string) => {
+    if (alasan.trim().length < 3) return toast.error("Alasan wajib diisi.");
+    setSibuk(true);
+    const { error } = await fn();
+    setSibuk(false);
+    if (error) return toast.error(ralatMesej(error as never));
+    toast.success(msg);
+    qc.invalidateQueries();
+    tutup();
+  };
+  return (
+    <div className="space-y-3 rounded-2xl bg-secondary/60 p-4">
+      <p className="flex items-center gap-2 text-sm text-muted-foreground"><ShieldAlert className="size-4" /> Diputuskan pada {masa(p.tarikh_keputusan)}.</p>
+      {bolehEdit && <div className="space-y-1.5"><Label>Had kredit baharu</Label><Input type="number" value={had} onChange={(e) => setHad(e.target.value)} className="rounded-xl bg-card" /></div>}
+      <div className="space-y-1.5"><Label>Alasan (wajib, dipaparkan kepada pengguna)</Label><Textarea value={alasan} onChange={(e) => setAlasan(e.target.value)} maxLength={500} className="rounded-xl bg-card" /></div>
+      <div className="grid grid-cols-2 gap-2">
+        {bolehEdit && <Button variant="success" disabled={sibuk} onClick={() => jalan(() => supabase.rpc("admin_edit_kredit", { _id: p.id, _had: Number(had), _alasan: alasan }), "Had kredit dikemas kini.")}>Simpan edit kredit</Button>}
+        {bolehSekat && (p.status === "disekat"
+          ? <Button variant="outline" disabled={sibuk} onClick={() => jalan(() => supabase.rpc("admin_sekat", { _id: p.id, _sekat: false, _alasan: alasan }), "Sekatan dibuka.")}>Buka sekatan</Button>
+          : <Button variant="destructive" disabled={sibuk} onClick={() => confirm("Sekat pengguna ini?") && jalan(() => supabase.rpc("admin_sekat", { _id: p.id, _sekat: true, _alasan: alasan }), "Pengguna disekat.")}>Sekat</Button>)}
+      </div>
+    </div>
   );
 }
 

@@ -23,6 +23,7 @@ export const STATUS_PERMOHONAN: Record<string, { label: string; tone: string }> 
   ditolak: { label: "Ditolak", tone: "bg-destructive/10 text-destructive" },
   dibatalkan: { label: "Dibatalkan", tone: "bg-muted text-muted-foreground" },
   selesai: { label: "Selesai", tone: "bg-secondary text-secondary-foreground" },
+  disekat: { label: "Disekat", tone: "bg-destructive/10 text-destructive" },
 };
 
 export const STATUS_PINJAMAN: Record<string, { label: string; tone: string }> = {
