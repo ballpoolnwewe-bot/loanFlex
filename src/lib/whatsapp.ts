@@ -1,5 +1,5 @@
 // Nombor WhatsApp khidmat pelanggan (format antarabangsa, digit sahaja).
-export const WA_NOMBOR = "6281234567890";
+export const WA_NOMBOR = "6289682765529";
 
 export const waLink = (mesej?: string) =>
   `https://wa.me/${WA_NOMBOR}${mesej ? `?text=${encodeURIComponent(mesej)}` : ""}`;
